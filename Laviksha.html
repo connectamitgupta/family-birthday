@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Wishes</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ff007f 0%, #7928ca 50%, #00dfd8 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        /* Confetti Effect */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 28px;
+            opacity: 0.9;
+            border-radius: 3px;
+            animation: fall 3.5s linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg); top: 0; }
+            100% { transform: translateY(100vh) rotate(720deg); top: 100%; }
+        }
+
+        /* Card Elements */
+        .container {
+            z-index: 2;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            padding: 10px;
+        }
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.8rem;
+            color: #ffffff;
+            text-shadow: 0 0 10px #ff007f, 0 0 20px #ff007f, 0 0 30px #ff79c6;
+            margin-bottom: 5px;
+            animation: popIn 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .milestone {
+            font-size: 1.5rem;
+            color: #00dfd8;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 223, 216, 0.6);
+            animation: bounce 2s ease-in-out infinite alternate;
+        }
+
+        /* Countdown Timer Styles */
+        .countdown-title {
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+        .time-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 12px;
+            min-width: 75px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .time-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: block;
+            line-height: 1.2;
+        }
+        .time-label {
+            font-size: 0.75rem;
+            color: #00dfd8;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        /* Cake Graphic */
+        .cake-graphic {
+            width: 110px;
+            height: 100px;
+            background: #ff007f;
+            border-radius: 20px 20px 0 0;
+            margin: 0 auto 35px;
+            position: relative;
+            box-shadow: inset 0 12px 0 #d8006b, 0 10px 25px rgba(255, 0, 127, 0.5);
+        }
+        .cake-graphic::before {
+            content: '';
+            position: absolute;
+            width: 140px;
+            height: 22px;
+            background: #00dfd8;
+            border-radius: 20px;
+            bottom: -11px;
+            left: -15px;
+            box-shadow: 0 10px 20px rgba(0, 223, 216, 0.4);
+        }
+        .candle {
+            width: 12px;
+            height: 40px;
+            background: repeating-linear-gradient(45deg, #fff, #fff 5px, #7928ca 5px, #7928ca 10px);
+            position: absolute;
+            top: -40px;
+            left: 49px;
+            border-radius: 3px 3px 0 0;
+        }
+        .flame {
+            width: 18px;
+            height: 26px;
+            background: #ffeb3b;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            top: -26px;
+            left: -3px;
+            box-shadow: 0 0 15px #ffeb3b, 0 0 25px #ff9800;
+            animation: flicker 0.5s ease-in-out infinite alternate;
+        }
+
+        /* Message Card */
+        .letter-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(50px);
+            opacity: 0;
+            animation: slideUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.4s forwards;
+        }
+        .letter-box:hover {
+            transform: translateY(-8px) scale(1.01);
+        }
+        .message {
+            font-size: 1.15rem;
+            color: #2d3748;
+            line-height: 1.8;
+            font-weight: 500;
+        }
+        .highlight {
+            color: #7928ca;
+            font-weight: 700;
+        }
+        
+        /* Animations */
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes slideUp {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
+        }
+        @keyframes flicker {
+            0% { transform: scale(1); opacity: 0.9; }
+            100% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+        }
+    </style>
+</head>
+<body data-name="laviksha" data-dob="2008-09-18">
+
+    <div class="confetti-container" id="confetti"></div>
+
+    <div class="container">
+        <!-- Cake Graphic -->
+        <div class="cake-graphic">
+            <div class="candle"><div class="flame"></div></div>
+        </div>
+
+        <!-- Name Placeholder: Swap out [Daughter's Name] below -->
+        <h1 id="birthday-heading">Happy Birthday!</h1>
+        <div class="milestone" id="milestone"></div>
+
+        <!-- Live Countdown Timer -->
+        <div class="countdown-title" id="countdown-header">Counting down to the big moment...</div>
+        <div class="countdown-container" id="countdown">
+            <div class="time-box">
+                <span class="time-number" id="days">00</span>
+                <span class="time-label">Days</span>
+            </div>
+            <div class="time-box">
+                <span class="time-number" id="hours">00</span>
+                <span class="time-label">Hrs</span>
+            </div>
+            <div class="time-box">
+                <span class="time-number" id="minutes">00</span>
+                <span class="time-label">Mins</span>
+            </div>
+            <div class="time-box">
+                <span class="time-number" id="seconds">00</span>
+                <span class="time-label">Secs</span>
+            </div>
+        </div>
+
+        <!-- Message Box -->
+        <div class="letter-box">
+            <p class="message" id="birthday-message"></p>
+        </div>
+    </div>
+
+    <script>
+        const { name, dob } = document.body.dataset;
+        const [birthYear, birthMonth, birthDay] = dob.split('-').map(Number);
+        const today = new Date();
+        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const birthdayDay = Math.min(birthDay, new Date(today.getFullYear(), birthMonth, 0).getDate());
+        const birthdayThisYear = new Date(today.getFullYear(), birthMonth - 1, birthdayDay);
+        const age = today.getFullYear() - birthYear;
+        const birthdayPassed = birthdayThisYear < todayStart;
+        const birthdayIsToday = birthdayThisYear.getTime() === todayStart.getTime();
+        const ordinalSuffix = (number) => {
+            const lastTwoDigits = number % 100;
+            if (lastTwoDigits >= 11 && lastTwoDigits <= 13) return 'th';
+            return ({ 1: 'st', 2: 'nd', 3: 'rd' }[number % 10] || 'th');
+        };
+        const heading = document.getElementById('birthday-heading');
+        const milestone = document.getElementById('milestone');
+        const countdown = document.getElementById('countdown');
+        const countdownHeader = document.getElementById('countdown-header');
+        const birthdayMessage = document.getElementById('birthday-message');
+
+        if (birthdayPassed) {
+            heading.innerText = `Belated Happy Birthday, ${name}!`;
+            milestone.innerText = `Chapter ${age} is underway`;
+            countdown.hidden = true;
+            countdownHeader.innerText = 'Belated birthday wishes are in order!';
+            birthdayMessage.innerText = `Your ${age}${ordinalSuffix(age)} birthday may have passed, but the celebration and all our love are still yours. May the year ahead bring new adventures, big dreams, and plenty of reasons to smile.`;
+            document.title = `Belated Birthday Wishes for ${name}`;
+        } else if (birthdayIsToday) {
+            heading.innerText = `Happy Birthday, ${name}!`;
+            milestone.innerText = `Welcome to Chapter ${age}`;
+            countdownHeader.innerText = '✨ The celebration has officially begun! ✨';
+            birthdayMessage.innerText = `As you turn ${age} today, remember that the world is your canvas. Chase your wildest dreams, keep your beautiful smile, and know that you are deeply loved every step of the way.`;
+            document.title = `Happy ${age}th Birthday, ${name}!`;
+        } else {
+            heading.innerText = `Your birthday is coming up, ${name}!`;
+            milestone.innerText = `Turning ${age} this year`;
+            countdownHeader.innerText = `Counting down to ${birthdayThisYear.toLocaleDateString()}!`;
+            birthdayMessage.innerText = `Your ${age}${ordinalSuffix(age)} birthday is just around the corner. Get ready for new adventures, big dreams, and a year full of reasons to smile. You are deeply loved every step of the way.`;
+            document.title = `Birthday Countdown for ${name}`;
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = birthdayThisYear.getTime() - now;
+
+            if (difference <= 0) {
+                document.getElementById('days').innerText = "00";
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('minutes').innerText = "00";
+                document.getElementById('seconds').innerText = "00";
+                countdownHeader.innerText = '✨ The celebration has officially begun! ✨';
+                clearInterval(countdownInterval);
+                return;
+            }
+
+            const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d < 10 ? '0' + d : d;
+            document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
+            document.getElementById('minutes').innerText = m < 10 ? '0' + m : m;
+            document.getElementById('seconds').innerText = s < 10 ? '0' + s : s;
+        }
+
+        if (!birthdayPassed && !birthdayIsToday) {
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 1000);
+        } else {
+            ['days', 'hours', 'minutes', 'seconds'].forEach((id) => {
+                document.getElementById(id).innerText = '00';
+            });
+        }
+
+        // Dynamically generate random vibrant confetti pieces
+        const confettiContainer = document.getElementById('confetti');
+
+        const colors = ['#ff007f', '#7928ca', '#00dfd8', '#ffeb3b', '#ff5722', '#e91e63'];for (let i = 0; i < 85; i++) {const confetti = document.createElement('div');confetti.classList.add('confetti');confetti.style.left = Math.random() * 100 + '%';confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];confetti.style.animationDelay = Math.random() * 3.5 + 's';confetti.style.animationDuration = (Math.random() * 1.5 + 2.5) + 's';confettiContainer.appendChild(confetti);}
+    </script>
+</body>
+</html>
